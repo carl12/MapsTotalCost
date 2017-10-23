@@ -286,16 +286,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Log.d("asdf",haveData+"");
-                if(!haveData)
+                if(haveData)
                 {
-                    build_retrofit_and_get_response("driving", false);
-                    build_retrofit_and_get_response("walking", false );
-                    build_retrofit_and_get_response("bicycling", false);
-                    haveData = true;
-
+                    Intent myItent = new Intent(MapsActivity.this,DataActivity.class);
+                    startActivity(myItent);
                 }
-                Intent myItent = new Intent(MapsActivity.this,DataActivity.class);
-                startActivity(myItent);
             }
         });
 
@@ -353,10 +348,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     + origin.longitude,dest.latitude + "," + dest.longitude, type);
             Log.d("asdf","asdfasdf");
             call.enqueue(new Callback<Example>() {
+
                 @Override
                 public void onResponse(Response<Example> response, Retrofit retrofit) {
                     try {
-
                         // This loop will go through all the results and add marker on each location.
                         Log.d("show",response.body().getRoutes().size()+"");
                         for (int i = 0; i < response.body().getRoutes().size(); i++) {
@@ -402,12 +397,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.d("asdf",e.toString());
                         e.printStackTrace();
                     }
+
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("asdf", t.toString());
                 }
+
             });
         } catch (Exception e){
             Log.d("asdf",e.toString());
