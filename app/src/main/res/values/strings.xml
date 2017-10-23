@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">GoogleMapsDistanceCalculator</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="showRoute">Show Routes</string>
+    <string name="calcRoute">Analyze Routes</string>
+    <string name="clearAll">Clear All</string>
+
+    <string name="close">Close</string>
+    <string name="settings">Settings</string>
+
+    <string name="drive">Driving</string>
+    <string name="walk">Walking</string>
+    <string name="bike">Biking</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="error">Something went wrong!</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="settingPref">settingsSharedPreferences</string>
+    <string name="unitPref">unitPref</string>
+    <string name="weight">weight</string>
+    <string name="mpg">mpg</string>
+
+
+</resources>
