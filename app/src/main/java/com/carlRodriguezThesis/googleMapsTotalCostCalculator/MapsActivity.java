@@ -134,12 +134,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        
-        btnAll = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnAll);
-        btnClear = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnClear);
-        btnData = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData);
-        btnOrg = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnOrg);
-        btnDest = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnDest);
+
 
         // Add a marker in  WU and move the camera
         if(!holder.havePos()) {
@@ -183,7 +178,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Setting onclick event listener for the map
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
             @Override
             public void onMapClick(LatLng point) {
                 haveData = false;
@@ -198,6 +192,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     if(choosingOrg){
                         Log.d("asdf","point Added");
+
+                        Log.d("asdf",mMap.getCameraPosition().zoom+" is zoom");
                         MarkerPoints.add(0,point);
                         orgSet = true;
                         Log.d("asdf","point Added");
@@ -264,11 +260,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         doButtonListeners();
         changeSelectColors();
+        Log.d("asdf",mMap.getCameraPosition().zoom+" is zoom");
     }
 
     private void changeSelectColors(){
-        Button btnDest = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnDest);
-        Button btnOrg = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnOrg);
         if(choosingOrg){
             btnOrg.setTextColor(Color.RED);
             btnDest.setTextColor(Color.BLACK);
@@ -280,8 +275,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void doButtonListeners(){
-//        Button btnAll = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnAll);
-        btnAll.setOnClickListener(new View.OnClickListener() {
+        btnAll = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnAll);
+        btnClear = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnClear);
+        btnData = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData);
+        btnOrg = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnOrg);
+        btnDest = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnDest);
+
+       btnAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 build_retrofit_and_get_response("driving", true);
