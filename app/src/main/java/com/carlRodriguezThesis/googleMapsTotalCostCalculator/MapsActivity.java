@@ -39,6 +39,8 @@ import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+import static com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData;
+
 /**
  * Started by Navneet, modified by Carl Rodriguez
  */
@@ -53,6 +55,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     DataHolder holder = DataHolder.getInstance();
     boolean haveData = false;
 
+//    Button btnClear = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnClear);
+//    Button btnData = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData);
+//    Button btnOrg = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnOrg);
+//    Button btnDest = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnDest);
+
+
     final String WALK = "walking";
     final String DRIVE = "driving";
     final String BIKE = "bicycling";
@@ -65,13 +73,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     boolean orgSet = false;
     boolean destSet = false;
 
-
-
+    Button btnAll;
+    Button btnClear;
+    Button btnOrg;
+    Button btnData;
+    Button btnDest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         Log.d("asdf","OnCreate");
+
         super.onCreate(savedInstanceState);
         setTitle("asdf");
         SharedPreferences sharedPref = getSharedPreferences(getString(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.string.settingPref),0);
@@ -122,6 +134,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        
+        btnAll = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnAll);
+        btnClear = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnClear);
+        btnData = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData);
+        btnOrg = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnOrg);
+        btnDest = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnDest);
 
         // Add a marker in  WU and move the camera
         if(!holder.havePos()) {
@@ -260,8 +278,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             btnDest.setTextColor(Color.RED);
         }
     }
+
     private void doButtonListeners(){
-        Button btnAll = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnAll);
+//        Button btnAll = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnAll);
         btnAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -269,10 +288,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 build_retrofit_and_get_response("walking", true );
                 build_retrofit_and_get_response("bicycling", true);
                 haveData = true;
+
             }
         });
 
-        Button btnClear = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnClear);
+//        Button btnClear = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnClear);
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -280,8 +300,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        Button btnData = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData);
-
+//        Button btnData = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData);
         btnData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -294,7 +313,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        Button btnOrg = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnOrg);
+//        Button btnOrg = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnOrg);
         btnOrg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -304,7 +323,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        Button btnDest = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnDest);
+//        Button btnDest = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnDest);
         btnDest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -318,6 +337,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void clearPaths(){
+
         mMap.clear();
         holder.clear();
         haveData  = false;
