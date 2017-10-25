@@ -100,7 +100,7 @@ public class DataActivity extends AppCompatActivity {
     protected void onStart(){
         try{
         super.onStart();
-        dist = holder.getDistance();
+        dist = holder.getDistances();
         time = holder.getTime();
 
         for(int i = 0; i < 3; i++) {

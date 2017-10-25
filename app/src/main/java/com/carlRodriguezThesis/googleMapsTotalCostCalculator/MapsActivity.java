@@ -39,8 +39,6 @@ import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-import static com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData;
-
 /**
  * Started by Navneet, modified by Carl Rodriguez
  */
@@ -51,7 +49,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LatLng dest;
     ArrayList<LatLng> MarkerPoints;
     TextView ShowDistanceDuration;
-    ArrayList<Polyline> lines = new ArrayList<>();
+    List<Polyline> lines = new ArrayList<>();
     DataHolder holder = DataHolder.getInstance();
     boolean haveData = false;
 
@@ -76,13 +74,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Button btnAll;
     Button btnClear;
     Button btnOrg;
-    Button btnData;
     Button btnDest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Log.d("asdf","OnCreate");
+        Log.i("asdf","OnCreate");
 
         super.onCreate(savedInstanceState);
         setTitle("asdf");
@@ -133,6 +130,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.i("asdf","on map ready");
         mMap = googleMap;
 
 
@@ -153,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions optionsStart = new MarkerOptions();
         optionsStart.position(origin);
         optionsStart.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-
+        Log.i("asdf","Checkpoint!1");
         mMap.addMarker(optionsStart);
         orgSet = true;
         MarkerPoints.add(origin);
@@ -169,12 +167,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
         int extraZoom = 0;
-        if(holder.haveDistance()){
-             double distance = holder.getDistance()[0].getValue();
-            extraZoom = (int)Math.round(-(Math.log(distance)/Math.log(2.2)-7));
+        try {
+            if (holder.haveDistances()) {
+                Log.i("asdf", "Made it this far");
+                double distance = holder.getDistances()[0].getValue();
+                extraZoom = (int) Math.round(-(Math.log(distance) / Math.log(2.2) - 7));
+                if (holder.haveLine()) {
+                    lines = holder.getLines();
+                    mMap.addPolyline(new PolylineOptions().addAll(lines.get(0).getPoints()).width(20).color(Color.BLUE).geodesic(true));
+
+                }
+
+            }
+        } catch(Exception e){
+            Log.i("asdf",e.toString());
         }
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15+extraZoom));
-
 
         // Setting onclick event listener for the map
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -185,82 +193,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 if (choosingOrg == orgSet || choosingOrg != destSet) {
 
-                    clearPaths();
+                    clearPoints();
                 }
-
-                // Adding new item to the ArrayList
-
-                    if(choosingOrg){
-                        Log.d("asdf","point Added");
-
-                        Log.d("asdf",mMap.getCameraPosition().zoom+" is zoom");
-                        MarkerPoints.add(0,point);
-                        orgSet = true;
-                        Log.d("asdf","point Added");
-                    }
-                    else
-                    {
-                        Log.d("asdf","point Added");
-                        MarkerPoints.add(1,point);
-                        destSet = true;
-                        Log.d("asdf","point Added");
-                    }
-
 
                 // Creating MarkerOptions
                 MarkerOptions options = new MarkerOptions();
 
-                // Setting the position of the marker
-                options.position(point);
+                // Adding new item to the ArrayList
 
-                /**
-                 * For the start location, the color of marker is GREEN and
-                 * for the end location, the color of marker is RED.
-                 */
-                if (choosingOrg) {
-                    options.icon(BitmapDescriptorFactory.
-                            defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                } else {
-                    options.icon(BitmapDescriptorFactory.
-                            defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                }
-                Log.d("asdf","Options set");
-
-
-
-                // Add new marker to the Google Map Android API V2
-                mMap.addMarker(options);
-                Log.d("asdf","Marker Added");
-                // Checks, whether start and end locations are captured
-                if(choosingOrg){
-
-                    Log.d("asdf","Starting choosing org");
-                    origin = MarkerPoints.get(0);
-                    holder.setStart(origin);
-                    Log.d("asdf","Choosing Org done");
-                }else{
-                    try{
-                        Log.d("asdf","Starting choosing dest");
+                    if(choosingOrg){
+                       MarkerPoints.add(0,point);
+                        orgSet = true;
+                        options.icon(BitmapDescriptorFactory.
+                                defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        options.position(point);
+                        mMap.addMarker(options);
+                        origin = MarkerPoints.get(0);
+                        holder.setStart(origin);
+                    }
+                    else
+                    {
+                        MarkerPoints.add(1,point);
+                        destSet = true;
+                        options.icon(BitmapDescriptorFactory.
+                                defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        options.position(point);
+                        mMap.addMarker(options);
                         dest = MarkerPoints.get(1);
                         holder.setDest(dest);
-                        Log.d("asdf","Choosing Org done");
-                    }catch (Exception e){
-                        Log.d("asdf",e.toString());
                     }
-
-                }
-                Log.d("asdf","Origin/Dest set");
-
 
                 choosingOrg = !choosingOrg;
                 Log.d("asdf","setting colors");
                 changeSelectColors();
             }
         });
-
         doButtonListeners();
         changeSelectColors();
-        Log.d("asdf",mMap.getCameraPosition().zoom+" is zoom");
+        Log.i("asdf",mMap.getCameraPosition().zoom+" is zoom");
     }
 
     private void changeSelectColors(){
@@ -275,19 +245,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void doButtonListeners(){
-        btnAll = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnAll);
-        btnClear = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnClear);
-        btnData = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData);
-        btnOrg = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnOrg);
-        btnDest = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnDest);
-
+        btnAll = (Button) findViewById(R.id.btnAll);
+        btnClear = (Button) findViewById(R.id.btnClear);
+        btnOrg = (Button) findViewById(R.id.btnOrg);
+        btnDest = (Button) findViewById(R.id.btnDest);
        btnAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                build_retrofit_and_get_response("driving", true);
-                build_retrofit_and_get_response("walking", true );
-                build_retrofit_and_get_response("bicycling", true);
-                haveData = true;
+                if(holder.haveDistances()){
+                    holder.setZoom(mMap.getCameraPosition().zoom);
+                    holder.setLines(lines);
+                    Intent myIntent = new Intent(MapsActivity.this,DataActivity.class);
+                    startActivity(myIntent);
+                } else {
+                    build_retrofit_and_get_response("driving", true);
+                    build_retrofit_and_get_response("walking", true );
+                    build_retrofit_and_get_response("bicycling", true);
+                }
+
 
             }
         });
@@ -296,20 +271,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearPaths();
-            }
-        });
-
-//        Button btnData = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnData);
-        btnData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("asdf",haveData+"");
-                if(haveData)
-                {
-                    Intent myItent = new Intent(MapsActivity.this,DataActivity.class);
-                    startActivity(myItent);
-                }
+                clearPoints();
             }
         });
 
@@ -319,28 +281,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 choosingOrg = true;
                 changeSelectColors();
+                Log.i("asdf","org tapped");
 
             }
         });
+
 
 //        Button btnDest = (Button) findViewById(com.carlRodriguezThesis.googleMapsTotalCostCalculator.R.id.btnDest);
-        btnDest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingOrg = false;
-                changeSelectColors();
+            btnDest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingOrg = false;
+                    changeSelectColors();
+                    Log.i("asdf","dest tapped");
+                }
+            });
 
-            }
-        });
 
 
     }
 
-    private void clearPaths(){
+    private void clearPoints(){
 
         mMap.clear();
         holder.clear();
         haveData  = false;
+        btnAll.setText("Get routes");
         orgSet = false;
         destSet = false;
         origin = null;
@@ -366,7 +332,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             Call<Example> call = service.getDistanceDuration("imperial", origin.latitude + ","
                     + origin.longitude,dest.latitude + "," + dest.longitude, type);
-            Log.d("asdf","asdfasdf");
+
             call.enqueue(new Callback<Example>() {
 
                 @Override
@@ -407,7 +373,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         .color(routeColor)
                                         .geodesic(true)
                                 ));
-                            }
+                                }
 
 
                         }
@@ -416,6 +382,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.d("asdf", "There is an error");
                         Log.d("asdf",e.toString());
                         e.printStackTrace();
+                    }
+                    if(holder.haveDistances()){
+                        btnAll.setText("Get Data");
                     }
 
                 }
