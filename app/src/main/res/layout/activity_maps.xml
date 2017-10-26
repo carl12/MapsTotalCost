@@ -72,6 +72,12 @@
                 android:layout_weight="1"
                 android:text="Select Dest." />
 
+            <Button
+                android:id="@+id/btnDest2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Select Dest." />
         </LinearLayout>
 
     </RelativeLayout>
