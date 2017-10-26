@@ -20,7 +20,6 @@ public class DataHolder {
     }
 
     public boolean haveDistances(){
-        Log.i("asdf",(distance[0]!=null)+" ");
         return distance[0] != null && distance[1] != null && distance[2] != null;
     }
 
@@ -56,7 +55,6 @@ public class DataHolder {
         lines = in;
     }
     public boolean haveLine(){
-        Log.i("asdf",lines.isEmpty()+" is empty");
         return !lines.isEmpty();
     }
     public List<Polyline> getLines(){

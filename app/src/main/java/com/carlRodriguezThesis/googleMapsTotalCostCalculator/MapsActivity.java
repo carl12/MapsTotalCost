@@ -136,8 +136,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in  WU and move the camera
         if(!holder.havePos()) {
-            origin = new LatLng(44.935971, -123.031860);
-            dest  = new LatLng(44.941758, -123.026426);
+            origin = new LatLng(37.4419, -122.1430);
+            dest  = new LatLng(37.4275, -122.1697);
 
             holder.setStart(origin);
             holder.setDest(dest);
@@ -151,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions optionsStart = new MarkerOptions();
         optionsStart.position(origin);
         optionsStart.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        Log.i("asdf","Checkpoint!1");
+
         mMap.addMarker(optionsStart);
         orgSet = true;
         MarkerPoints.add(origin);
@@ -169,7 +169,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int extraZoom = 0;
         try {
             if (holder.haveDistances()) {
-                Log.i("asdf", "Made it this far");
                 double distance = holder.getDistances()[0].getValue();
                 extraZoom = (int) Math.round(-(Math.log(distance) / Math.log(2.2) - 7));
                 if (holder.haveLine()) {
@@ -182,7 +181,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch(Exception e){
             Log.i("asdf",e.toString());
         }
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15+extraZoom));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(13+extraZoom));
 
         // Setting onclick event listener for the map
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -224,7 +223,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
 
                 choosingOrg = !choosingOrg;
-                Log.d("asdf","setting colors");
                 changeSelectColors();
             }
         });
@@ -339,7 +337,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onResponse(Response<Example> response, Retrofit retrofit) {
                     try {
                         // This loop will go through all the results and add marker on each location.
-                        Log.d("show",response.body().getRoutes().size()+"");
                         for (int i = 0; i < response.body().getRoutes().size(); i++) {
 
                             Distance distance = response.body().getRoutes().get(i).getLegs().get(i).getDistance();
